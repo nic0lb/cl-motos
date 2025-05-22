@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Controle de Atendimento</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f4f4f9;
+            flex-direction: column;
+        }
+
+        .logo {
+            width: 200px;  /* Ajuste o tamanho da logo conforme necessário */
+            height: auto;
+            margin-bottom: 20px; /* Espaço entre a logo e o conteúdo */
+        }
+
+        .container {
+            display: flex;
+            justify-content: space-between;
+            width: 90%;
+            max-width: 1200px;
+            padding: 20px;
+        }
+
+        .left-panel, .right-panel {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 45%;
+        }
+
+        .right-panel {
+            border-left: 2px solid #ccc;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .btn-iniciar {
+            background-color: #28a745;
+            color: white;
+        }
+
+        .btn-finalizar {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        .status, .projection {
+            font-size: 18px;
+            margin-top: 20px;
+        }
+
+        .tma-status {
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .green {
+            color: #28a745;
+        }
+
+        .orange {
+            color: #fd7e14;
+        }
+
+        .red {
+            color: #dc3545;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .input-name {
+            margin-bottom: 10px;
+            padding: 10px;
+            font-size: 16px;
+            border-radius: 5px;
+            width: 96%;
+            margin-top: 10px;
+        }
+
+        .time-list {
+            margin-top: 20px;
+            font-size: 14px;
+            text-align: left;
+        }
+
+        .time-list ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+
+        .time-list li {
+            padding: 5px 0;
+        }
+
+        .title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- Logo Centralizada -->
+    <img src="logo-energisa.png" alt="Logo" class="logo">
+
+    <div class="container">
+        <!-- Painel Esquerdo (Controle de Atendimento) -->
+        <div class="left-panel">
+            <div id="nameSection">
+                <input type="text" id="nameInput" class="input-name" placeholder="Digite seu nome" />
+                <button id="loginBtn" class="btn btn-iniciar">Login</button>
+            </div>
+
+            <div id="controlSection" class="hidden">
+                <button id="startBtn" class="btn btn-iniciar">Iniciar Atendimento</button>
+                <button id="endBtn" class="btn btn-finalizar hidden">Finalizar Atendimento</button>
+            </div>
+
+            <div class="time-list">
+                <p class="title">Lista de Tempos de Atendimento:</p>
+                <ul id="timeList"></ul>
+            </div>
+        </div>
+
+        <!-- Painel Direito (Status do TMA) -->
+        <div class="right-panel">
+            <h1>Status do Atendimento</h1>
+            <div class="status">
+                <p id="timeDisplay">Tempo de Atendimento: 00:00</p>
+                <p id="tmaStatus" class="tma-status">TMA: Aguardando...</p>
+            </div>
+
+            <div class="projection">
+                <p id="avgTMA">Tempo Médio Atual: 0 segundos</p>
+                <p id="projectionDisplay">Projeção para atingir a meta: A calcular...</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let startTime;
+        let endTime;
+        let totalDuration = 0;
+        let totalCalls = 0;
+        const metaTMA = 230; // Nova meta em segundos (230 segundos)
+        let userName = "";
+        let times = [];
+
+        // Elementos DOM
+        const loginBtn = document.getElementById('loginBtn');
+        const startBtn = document.getElementById('startBtn');
+        const endBtn = document.getElementById('endBtn');
+        const timeDisplay = document.getElementById('timeDisplay');
+        const tmaStatus = document.getElementById('tmaStatus');
+        const avgTMA = document.getElementById('avgTMA');
+        const projectionDisplay = document.getElementById('projectionDisplay');
+        const timeList = document.getElementById('timeList');
+        const nameInput = document.getElementById('nameInput');
+        const nameSection = document.getElementById('nameSection');
+        const controlSection = document.getElementById('controlSection');
+
+        // Login do usuário
+        loginBtn.addEventListener('click', () => {
+            if (nameInput.value.trim() === "") {
+                alert("Por favor, digite seu nome.");
+                return;
+            }
+            userName = nameInput.value.trim();
+            nameSection.classList.add('hidden');
+            controlSection.classList.remove('hidden');
+        });
+
+        // Iniciar Atendimento
+        startBtn.addEventListener('click', () => {
+            startTime = new Date();
+            startBtn.classList.add('hidden');
+            endBtn.classList.remove('hidden');
+        });
+
+        // Finalizar Atendimento
+        endBtn.addEventListener('click', () => {
+            endTime = new Date();
+            const duration = (endTime - startTime) / 1000; // Duração em segundos
+            totalDuration += duration;
+            totalCalls++;
+            times.push(duration);
+
+            // Atualizar a exibição do tempo de atendimento
+            const minutes = Math.floor(duration / 60);
+            const seconds = Math.floor(duration % 60);
+            timeDisplay.textContent = `Tempo de Atendimento: ${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+
+            // Atualizar lista de tempos de atendimento
+            const timeItem = document.createElement('li');
+            timeItem.textContent = `${userName}: ${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+            timeList.appendChild(timeItem);
+
+            // Calcular TMA e status de cor
+            const avg = totalDuration / totalCalls;
+            avgTMA.textContent = `Tempo Médio Atual: ${Math.round(avg)} segundos`;
+
+            if (avg <= metaTMA) {
+                tmaStatus.textContent = `TMA: Dentro da meta!`;
+                tmaStatus.className = 'tma-status green';
+            } else if (avg <= metaTMA * 1.2) {
+                tmaStatus.textContent = `TMA: Quase dentro da meta!`;
+                tmaStatus.className = 'tma-status orange';
+            } else {
+                tmaStatus.textContent = `TMA: Acima da meta!`;
+                tmaStatus.className = 'tma-status red';
+            }
+
+            // Projeção para atingir a meta
+            if (avg > metaTMA) {
+                // Cálculo de quanto tempo médio é necessário para atingir a meta nos próximos 5 atendimentos
+                const requiredAverage = ((metaTMA * (totalCalls + 5)) - totalDuration) / 5;
+                projectionDisplay.textContent = `Tente nos próximos 5 atendimentos terminar em ${formatTime(requiredAverage)} para atingir a meta.`;
+            } else {
+                projectionDisplay.textContent = `Projeção para atingir a meta: Dentro da meta!`;
+            }
+
+            // Preparar para novo atendimento
+            startBtn.classList.remove('hidden');
+            endBtn.classList.add('hidden');
+        });
+
+        // Função para formatar o tempo para minutos:segundos
+        function formatTime(seconds) {
+            const minutes = Math.floor(seconds / 60);
+            const remainingSeconds = Math.round(seconds % 60);
+            return `${minutes}:${remainingSeconds < 10 ? '0' : ''}${remainingSeconds}`;
+        }
+    </script>
+<footer style="background-color: #f2f2f2; padding: 20px; text-align: center; font-family: Arial, sans-serif; font-size: 14px; color: #333;">
+    <p>&copy; 2025 Equipe do Projeto:</p>
+    <ul style="list-style: none; padding: 0;">
+        <li><strong>Kevin Dias:</strong> Responsável pela concepção e ideia original.</li>
+        <li><strong>Jose Roniel:</strong> Primeira versão do projeto em planilha.</li>
+        <li><strong>Nicolas Benicio:</strong> Desenvolvimento e implementação em Web.</li>
+    </ul>
+</footer>
+
+
+</body>
+</html>
