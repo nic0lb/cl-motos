@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel Administrativo | CL Motos</title>
+    
+    <!-- Configurações PWA (Instalação como App Mobile/Desktop) -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#e50914">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="CL Motos ADM">
+    <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/3233/3233480.png">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome para Ícones -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Supabase SDK CDN & Configuração -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabaseClient.js"></script>
+
+    <!-- Estilos CSS -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="admin-body">
+
+    <!-- Modal de Login ADM -->
+    <div class="admin-login-overlay" id="adminLoginOverlay">
+        <div class="admin-login-card">
+            <div class="logo">
+                <i class="fa-solid fa-motorcycle"></i>
+                <span>CL <strong>Motos ADM</strong></span>
+            </div>
+            <h2>Acesso Restrito</h2>
+            <p>Digite a senha de acesso para gerenciar o estoque.</p>
+            <form id="loginForm">
+                <div class="sim-group">
+                    <input type="password" id="adminPassword" placeholder="Senha (padrão: 1234)" required autocomplete="current-password">
+                </div>
+                <button type="submit" class="btn btn-primary w-100">Entrar no Painel</button>
+            </form>
+            <p id="loginError" style="color: #ff4d4f; font-size: 0.85rem; margin-top: 10px; display: none;">Senha incorreta! Tente novamente.</p>
+        </div>
+    </div>
+
+    <!-- Conteúdo Principal do Painel ADM -->
+    <div class="admin-wrapper" id="adminContent" style="display: none;">
+        <header class="admin-header">
+            <div class="container admin-nav">
+                <a href="index.html" class="logo">
+                    <i class="fa-solid fa-motorcycle"></i>
+                    <span>CL <strong>Motos</strong> <small class="badge-adm">Painel ADM</small></span>
+                </a>
+                <div class="admin-actions">
+                    <a href="index.html" target="_blank" class="btn btn-secondary" rel="noopener"><i class="fa-solid fa-eye"></i> Ver Site Público</a>
+                    <button id="btnLogout" class="btn btn-logout"><i class="fa-solid fa-right-from-bracket"></i> Sair</button>
+                </div>
+            </div>
+        </header>
+
+        <main class="container admin-main">
+            <!-- Formulário de Cadastro / Edição -->
+            <section class="admin-card-section">
+                <div class="admin-card-header">
+                    <h2 id="formTitle"><i class="fa-solid fa-plus-circle"></i> Cadastrar Nova Motocicleta</h2>
+                </div>
+                
+                <form id="motoForm" class="admin-form">
+                    <input type="hidden" id="motoId">
+
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="marca">Marca *</label>
+                            <select id="marca" required>
+                                <option value="Honda">Honda</option>
+                                <option value="Yamaha">Yamaha</option>
+                                <option value="Outras">Outra Marca</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="modelo">Modelo / Nome *</label>
+                            <input type="text" id="modelo" placeholder="Ex: Honda CG 160 Titan" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="ano">Ano / Modelo *</label>
+                            <input type="text" id="ano" placeholder="Ex: 2023/2023" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="km">Quilometragem (formatação automática) *</label>
+                            <input type="text" id="km" placeholder="Ex: 10000 -> vira 10.000 km" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="precoNum">Preço numérico (R$) *</label>
+                            <input type="number" id="precoNum" placeholder="Ex: 16500" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="tag">Selo / Destaque *</label>
+                            <select id="tag" required>
+                                <option value="Seminova">Seminova</option>
+                                <option value="Destaque">Destaque</option>
+                                <option value="Baixa KM">Baixa KM</option>
+                                <option value="Revisada">Revisada</option>
+                                <option value="Oportunidade">Oportunidade</option>
+                                <option value="Impecável">Impecável</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="cilindrada">Cilindrada</label>
+                            <input type="text" id="cilindrada" placeholder="Ex: 162.7 cc">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="cor">Cor</label>
+                            <input type="text" id="cor" placeholder="Ex: Vermelho">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="combustivel">Combustível</label>
+                            <select id="combustivel">
+                                <option value="Flex">Flex</option>
+                                <option value="Gasolina">Gasolina</option>
+                                <option value="Etanol">Etanol</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="partida">Partida *</label>
+                            <select id="partida" required>
+                                <option value="Elétrica">Elétrica</option>
+                                <option value="Pedal">Pedal</option>
+                                <option value="Elétrica e Pedal">Elétrica e Pedal</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="freio">Freios *</label>
+                            <select id="freio" required>
+                                <option value="CBS (Disco/Tambor)">CBS (Disco/Tambor)</option>
+                                <option value="Disco Duplo CBS">Disco Duplo CBS</option>
+                                <option value="ABS nas 2 Rodas">ABS nas 2 Rodas</option>
+                                <option value="ABS Dianteiro">ABS Dianteiro</option>
+                                <option value="Tambor / Tambor">Tambor / Tambor</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group span-2">
+                            <label>Fotos da Moto (Upload Múltiplo ou Links por Linha) *</label>
+                            <div class="image-upload-options">
+                                <input type="file" id="imagensFiles" accept="image/*" multiple>
+                                <span class="divider-text">ou cole os links das fotos (um por linha):</span>
+                                <textarea id="imagensUrls" rows="3" placeholder="https://exemplo.com/foto1.jpg&#10;https://exemplo.com/foto2.jpg"></textarea>
+                            </div>
+                            <small class="help-text">A primeira foto é usada como capa principal no catálogo.</small>
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary" id="btnSaveMoto">
+                            <i class="fa-solid fa-floppy-disk"></i> Salvar no Supabase
+                        </button>
+                        <button type="button" class="btn btn-secondary" id="btnCancelEdit" style="display: none;">
+                            Cancelar Edição
+                        </button>
+                    </div>
+                </form>
+            </section>
+
+            <!-- Tabela de Gestão de Estoque Cadastrado -->
+            <section class="admin-card-section">
+                <div class="admin-card-header">
+                    <h2><i class="fa-solid fa-boxes-stacked"></i> Estoque no Supabase (<span id="totalEstoque">0</span> motos)</h2>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>Fotos</th>
+                                <th>Modelo</th>
+                                <th>Ano</th>
+                                <th>KM</th>
+                                <th>Preço</th>
+                                <th>Selo</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="adminTableBody">
+                            <!-- Injetado dinamicamente via JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Script de Lógica do Painel ADM -->
+    <script>
+        const ADMIN_PIN = "1234";
+
+        // Formatação inteligente da Quilometragem
+        function formatarQuilometragem(valor) {
+            if (!valor) return "0 km";
+            let apenasNumeros = valor.toString().replace(/\D/g, "");
+            if (!apenasNumeros) return valor;
+            let num = parseInt(apenasNumeros, 10);
+            return `${num.toLocaleString('pt-BR')} km`;
+        }
+
+        // Upload de foto para o Supabase Storage
+        async function uploadImageToSupabaseStorage(file) {
+            const fileExt = file.name.split('.').pop();
+            const fileName = `${Date.now()}_${Math.random().toString(36).substring(2)}.${fileExt}`;
+            const { data, error } = await supabaseClient.storage
+                .from('moto-images')
+                .upload(fileName, file);
+
+            if (error) throw error;
+
+            const { data: publicUrlData } = supabaseClient.storage
+                .from('moto-images')
+                .getPublicUrl(fileName);
+
+            return publicUrlData.publicUrl;
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const loginForm = document.getElementById('loginForm');
+            const loginOverlay = document.getElementById('adminLoginOverlay');
+            const adminContent = document.getElementById('adminContent');
+            const loginError = document.getElementById('loginError');
+            const inputKm = document.getElementById('km');
+
+            // Formatação automática do campo KM
+            inputKm.addEventListener('blur', () => {
+                if (inputKm.value.trim() !== '') {
+                    inputKm.value = formatarQuilometragem(inputKm.value);
+                }
+            });
+
+            if (sessionStorage.getItem('clmotos_logged') === 'true') {
+                loginOverlay.style.display = 'none';
+                adminContent.style.display = 'block';
+                renderAdminTable();
+            }
+
+            loginForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const pass = document.getElementById('adminPassword').value;
+                if (pass === ADMIN_PIN) {
+                    sessionStorage.setItem('clmotos_logged', 'true');
+                    loginOverlay.style.display = 'none';
+                    adminContent.style.display = 'block';
+                    renderAdminTable();
+                } else {
+                    loginError.style.display = 'block';
+                }
+            });
+
+            document.getElementById('btnLogout').addEventListener('click', () => {
+                sessionStorage.removeItem('clmotos_logged');
+                window.location.reload();
+            });
+
+            const motoForm = document.getElementById('motoForm');
+            motoForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const btnSave = document.getElementById('btnSaveMoto');
+                btnSave.innerText = "Salvando no Supabase...";
+                btnSave.disabled = true;
+
+                try {
+                    const id = document.getElementById('motoId').value;
+                    const filesInput = document.getElementById('imagensFiles');
+                    const urlsTextarea = document.getElementById('imagensUrls');
+
+                    let listaImagens = [];
+
+                    if (filesInput.files && filesInput.files.length > 0) {
+                        for (let i = 0; i < filesInput.files.length; i++) {
+                            const publicUrl = await uploadImageToSupabaseStorage(filesInput.files[i]);
+                            listaImagens.push(publicUrl);
+                        }
+                    }
+
+                    if (urlsTextarea.value.trim()) {
+                        const linhasUrls = urlsTextarea.value.split('\n').map(u => u.trim()).filter(u => u.length > 0);
+                        listaImagens = [...listaImagens, ...linhasUrls];
+                    }
+
+                    if (listaImagens.length === 0 && !id) {
+                        listaImagens = ["https://images.unsplash.com/photo-1558981403-c5f9899a28bc?auto=format&fit=crop&w=800&q=80"];
+                    }
+
+                    const precoValor = parseFloat(document.getElementById('precoNum').value) || 0;
+                    const precoFormatado = `R$ ${precoValor.toLocaleString('pt-BR')}`;
+                    const kmFormatada = formatarQuilometragem(document.getElementById('km').value);
+
+                    const motoData = {
+                        id: id ? parseInt(id) : Date.now(),
+                        marca: document.getElementById('marca').value,
+                        modelo: document.getElementById('modelo').value,
+                        ano: document.getElementById('ano').value,
+                        km: kmFormatada,
+                        preco_num: precoValor,
+                        preco: precoFormatado,
+                        tag: document.getElementById('tag').value,
+                        cilindrada: document.getElementById('cilindrada').value || "N/A",
+                        cor: document.getElementById('cor').value || "N/A",
+                        combustivel: document.getElementById('combustivel').value,
+                        partida: document.getElementById('partida').value,
+                        freio: document.getElementById('freio').value,
+                        ...(listaImagens.length > 0 && { imagens: listaImagens })
+                    };
+
+                    let error;
+                    if (id) {
+                        const res = await supabaseClient.from('motos').update(motoData).eq('id', parseInt(id));
+                        error = res.error;
+                    } else {
+                        const res = await supabaseClient.from('motos').insert([motoData]);
+                        error = res.error;
+                    }
+
+                    if (error) throw error;
+
+                    resetForm();
+                    renderAdminTable();
+                    alert("Motocicleta salva com sucesso no Supabase!");
+                } catch (err) {
+                    console.error("Erro ao salvar:", err);
+                    alert("Erro ao salvar no Supabase. Verifique se o bucket 'moto-images' possui permissões RLS ativas.");
+                } finally {
+                    btnSave.innerHTML = `<i class="fa-solid fa-floppy-disk"></i> Salvar no Supabase`;
+                    btnSave.disabled = false;
+                }
+            });
+
+            document.getElementById('btnCancelEdit').addEventListener('click', resetForm);
+        });
+
+        async function renderAdminTable() {
+            const tbody = document.getElementById('adminTableBody');
+            tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;">Carregando do banco...</td></tr>`;
+
+            const { data: estoque, error } = await supabaseClient
+                .from('motos')
+                .select('*')
+                .order('created_at', { ascending: false });
+
+            if (error) {
+                tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; color:#ff4d4f;">Erro ao carregar dados do Supabase.</td></tr>`;
+                return;
+            }
+
+            document.getElementById('totalEstoque').innerText = estoque.length;
+            tbody.innerHTML = "";
+
+            estoque.forEach(m => {
+                const imagensArr = m.imagens && m.imagens.length > 0 ? m.imagens : ["https://images.unsplash.com/photo-1558981403-c5f9899a28bc?auto=format&fit=crop&w=800&q=80"];
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>
+                        <img src="${imagensArr[0]}" alt="${m.modelo}" class="table-thumb">
+                        <small style="display:block; color:var(--text-muted);">${imagensArr.length} foto(s)</small>
+                    </td>
+                    <td><strong>${m.modelo}</strong></td>
+                    <td>${m.ano}</td>
+                    <td>${m.km}</td>
+                    <td><strong style="color: #ff4d4f;">${m.preco}</strong></td>
+                    <td><span class="badge-tag">${m.tag}</span></td>
+                    <td class="action-btns">
+                        <button class="btn-icon btn-edit" onclick="editarMoto(${m.id})" title="Editar"><i class="fa-solid fa-pen-to-square"></i></button>
+                        <button class="btn-icon btn-delete" onclick="deletarMoto(${m.id})" title="Excluir"><i class="fa-solid fa-trash"></i></button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        async function editarMoto(id) {
+            const { data: estoque, error } = await supabaseClient.from('motos').select('*').eq('id', id);
+            if (error || !estoque || estoque.length === 0) return;
+            const moto = estoque[0];
+
+            document.getElementById('motoId').value = moto.id;
+            document.getElementById('marca').value = moto.marca;
+            document.getElementById('modelo').value = moto.modelo;
+            document.getElementById('ano').value = moto.ano;
+            document.getElementById('km').value = moto.km;
+            document.getElementById('precoNum').value = moto.preco_num;
+            document.getElementById('tag').value = moto.tag;
+            document.getElementById('cilindrada').value = moto.cilindrada || '';
+            document.getElementById('cor').value = moto.cor || '';
+            document.getElementById('combustivel').value = moto.combustivel || 'Flex';
+            document.getElementById('partida').value = moto.partida || 'Elétrica';
+            document.getElementById('freio').value = moto.freio || 'CBS (Disco/Tambor)';
+
+            const imgs = moto.imagens || [];
+            document.getElementById('imagensUrls').value = imgs.join('\n');
+
+            document.getElementById('formTitle').innerHTML = `<i class="fa-solid fa-pen-to-square"></i> Editando: ${moto.modelo}`;
+            document.getElementById('btnSaveMoto').innerHTML = `<i class="fa-solid fa-floppy-disk"></i> Atualizar no Supabase`;
+            document.getElementById('btnCancelEdit').style.display = 'inline-block';
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        async function deletarMoto(id) {
+            if (confirm("Deseja realmente remover esta motocicleta do Supabase?")) {
+                const { error } = await supabaseClient.from('motos').delete().eq('id', id);
+                if (error) {
+                    alert("Erro ao excluir do banco.");
+                } else {
+                    renderAdminTable();
+                }
+            }
+        }
+
+        function resetForm() {
+            document.getElementById('motoForm').reset();
+            document.getElementById('motoId').value = '';
+            document.getElementById('formTitle').innerHTML = `<i class="fa-solid fa-plus-circle"></i> Cadastrar Nova Motocicleta`;
+            document.getElementById('btnSaveMoto').innerHTML = `<i class="fa-solid fa-floppy-disk"></i> Salvar no Supabase`;
+            document.getElementById('btnCancelEdit').style.display = 'none';
+        }
+    </script>
+
+    <!-- Registro do Service Worker para PWA -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then((reg) => console.log('Service Worker do PWA registrado com sucesso:', reg.scope))
+                    .catch((err) => console.log('Falha ao registrar Service Worker:', err));
+            });
+        }
+    </script>
+</body>
+</html>
