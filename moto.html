@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalhes da Moto | CL Motos</title>
+    <meta name="description" content="Confira os detalhes desta motocicleta seminova na CL Motos em Horizonte-CE.">
+    
+    <!-- Google Fonts & FontAwesome -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Supabase SDK & Client -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabaseClient.js"></script>
+
+    <!-- Estilos -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <!-- Header -->
+    <header class="header" id="header">
+        <div class="container nav-container">
+            <a href="index.html" class="logo">
+                <i class="fa-solid fa-motorcycle"></i>
+                <span>CL <strong>Motos</strong></span>
+            </a>
+            <nav class="nav-menu" id="nav-menu">
+                <a href="index.html" class="nav-link"><i class="fa-solid fa-arrow-left"></i> Voltar ao Catálogo</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Conteúdo do Anúncio -->
+    <main class="container" style="padding-top: 100px; padding-bottom: 60px;">
+        <div id="motoDetailContainer">
+            <div style="text-align: center; padding: 60px; color: var(--text-muted);">
+                <i class="fa-solid fa-spinner fa-spin" style="font-size: 2rem;"></i>
+                <p style="margin-top: 15px;">Carregando detalhes do veículo...</p>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container footer-content">
+            <p>&copy; 2026 CL Motos. Todos os direitos reservados.</p>
+            <p>Horizonte - Ceará</p>
+        </div>
+    </footer>
+
+    <!-- Script da Página -->
+    <script src="js/moto.js"></script>
+</body>
+</html>
