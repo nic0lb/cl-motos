@@ -224,7 +224,7 @@ ul {
 }
 
 /* ==========================================
-   CATÁLOGO DE MOTOS E CONTROLES (BUSCA)
+   CATÁLOGO DE MOTOS E CONTROLES
    ========================================== */
 .catalog {
     padding: 100px 0;
@@ -301,13 +301,10 @@ ul {
     border-color: rgba(229, 9, 20, 0.4);
 }
 
-/* ==========================================
-   IMAGEM DOS CARDS (CORREÇÃO DEFINITIVA)
-   ========================================== */
 .moto-card-img-wrapper {
     position: relative;
     width: 100%;
-    height: 240px; /* Altura fixa rigorosa para todos os cards */
+    height: 240px;
     overflow: hidden;
     background-color: #0b0c10;
 }
@@ -315,7 +312,7 @@ ul {
 .moto-card-img {
     width: 100%;
     height: 100%;
-    object-fit: cover; /* Preenche o espaço perfeitamente sem esticar ou distorcer */
+    object-fit: cover;
     object-position: center;
     display: block;
     transition: transform 0.5s ease;
@@ -578,31 +575,223 @@ ul {
 }
 
 /* ==========================================
+   ESTILOS EXCLUSIVOS DO PAINEL ADM (RESTAURADO)
+   ========================================== */
+.admin-body {
+    background-color: #0b0d11;
+}
+
+.admin-login-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    background-color: var(--bg-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 3000;
+}
+
+.admin-login-card {
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-color);
+    padding: 40px;
+    border-radius: 16px;
+    max-width: 400px;
+    width: 90%;
+    text-align: center;
+    box-shadow: var(--shadow);
+}
+
+.admin-header {
+    background-color: var(--bg-secondary);
+    border-bottom: 1px solid var(--border-color);
+    padding: 15px 0;
+}
+
+.admin-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.badge-adm {
+    background-color: var(--accent);
+    color: #fff;
+    font-size: 0.7rem;
+    padding: 2px 8px;
+    border-radius: 4px;
+    margin-left: 8px;
+    text-transform: uppercase;
+}
+
+.admin-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.admin-main {
+    padding: 40px 20px;
+}
+
+.admin-card-section {
+    background-color: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 25px;
+    margin-bottom: 30px;
+}
+
+.admin-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.admin-card-header h2 {
+    font-size: 1.3rem;
+}
+
+/* Grelha do Formulário ADM */
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+.form-group.span-2 {
+    grid-column: span 2;
+}
+
+.form-group label {
+    display: block;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin-bottom: 6px;
+}
+
+.form-group input, 
+.form-group select, 
+.form-group textarea {
+    width: 100%;
+    padding: 10px 14px;
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    color: #fff;
+    outline: none;
+    font-family: inherit;
+    font-size: 0.9rem;
+}
+
+.form-group input:focus, 
+.form-group select:focus, 
+.form-group textarea:focus {
+    border-color: var(--accent);
+}
+
+.image-upload-options {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.form-actions {
+    margin-top: 25px;
+    display: flex;
+    gap: 15px;
+}
+
+/* Tabela e Miniaturas no Painel ADM */
+.table-responsive {
+    overflow-x: auto;
+    width: 100%;
+}
+
+.admin-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+}
+
+.admin-table th, 
+.admin-table td {
+    padding: 12px 15px;
+    border-bottom: 1px solid var(--border-color);
+    vertical-align: middle;
+}
+
+.admin-table th {
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    text-transform: uppercase;
+}
+
+/* Correção rigorosa das miniaturas da tabela */
+.table-thumb, 
+.admin-table img {
+    width: 60px !important;
+    height: 45px !important;
+    max-width: 60px !important;
+    max-height: 45px !important;
+    object-fit: cover !important;
+    border-radius: 6px;
+    display: block;
+}
+
+.action-btns {
+    display: flex;
+    gap: 8px;
+}
+
+.btn-icon {
+    width: 34px;
+    height: 34px;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--transition);
+}
+
+.btn-edit {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #fff;
+}
+
+.btn-edit:hover {
+    background-color: #3b82f6;
+}
+
+.btn-delete {
+    background-color: rgba(229, 9, 20, 0.2);
+    color: #ff4d4f;
+}
+
+.btn-delete:hover {
+    background-color: var(--accent);
+    color: #fff;
+}
+
+/* ==========================================
    RESPONSIVIDADE (MEDIA QUERIES)
    ========================================== */
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
-.moto-card {
-    animation: fadeIn 0.4s ease forwards;
-}
-
 @media (max-width: 992px) {
-    .about-container {
-        grid-template-columns: 1fr;
-    }
-    .footer-content {
-        grid-template-columns: 1fr;
-        gap: 30px;
-    }
-    .hero h1 {
-        font-size: 2.6rem;
-    }
+    .about-container { grid-template-columns: 1fr; }
+    .footer-content { grid-template-columns: 1fr; gap: 30px; }
+    .hero h1 { font-size: 2.6rem; }
 }
 
 @media (max-width: 768px) {
+    .form-grid { grid-template-columns: 1fr; }
+    .form-group.span-2 { grid-column: span 1; }
     .nav-menu {
         position: fixed;
         top: 80px;
@@ -616,18 +805,6 @@ ul {
         transition: 0.4s ease;
         border-top: 1px solid var(--border-color);
     }
-    .nav-menu.active {
-        left: 0;
-    }
-    .nav-list {
-        flex-direction: column;
-        align-items: center;
-        gap: 25px;
-    }
-    .hero h1 {
-        font-size: 2.2rem;
-    }
-    .motos-grid {
-        grid-template-columns: 1fr;
-    }
+    .nav-menu.active { left: 0; }
+    .motos-grid { grid-template-columns: 1fr; }
 }
