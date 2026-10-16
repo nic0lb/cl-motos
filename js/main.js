@@ -1,4 +1,3 @@
-// Configurações globais do catálogo público da CL Motos
 const WHATSAPP_DEFAULT_NUMBER = "5585991105281";
 const FALLBACK_IMG = "https://images.unsplash.com/photo-1558981403-c5f9899a28bc?auto=format&fit=crop&w=800&q=80";
 
@@ -38,7 +37,7 @@ async function carregarCatalogoPublico(marcaFiltro = 'todos') {
                 <div style="grid-column: 1 / -1; text-align: center; padding: 60px; color: var(--text-muted);">
                     <i class="fa-solid fa-motorcycle" style="font-size: 2.5rem; margin-bottom: 15px; opacity: 0.5;"></i>
                     <h3>Nenhuma motocicleta encontrada</h3>
-                    <p>Tente selecionar outra marca ou volte mais tarde para ver novidades.</p>
+                    <p>Tente selecionar outra marca ou volte mais tarde.</p>
                 </div>
             `;
             return;
@@ -55,9 +54,8 @@ async function carregarCatalogoPublico(marcaFiltro = 'todos') {
 
             const card = document.createElement('div');
             card.className = 'moto-card';
-            card.style.cursor = 'pointer';
 
-            // Ao clicar no card, abre a página dedicada do anúncio
+            // Clicar no card abre a página detalhada da moto
             card.addEventListener('click', () => {
                 window.location.href = `moto.html?id=${moto.id}`;
             });
@@ -76,7 +74,7 @@ async function carregarCatalogoPublico(marcaFiltro = 'todos') {
                     </div>
                     <div class="moto-footer">
                         <div class="moto-preco">${moto.preco}</div>
-                        <a href="${linkWhats}" target="_blank" rel="noopener" class="btn btn-whatsapp-card" title="Negociar no WhatsApp" onclick="event.stopPropagation();">
+                        <a href="${linkWhats}" target="_blank" rel="noopener" class="btn-whatsapp-card" title="Negociar no WhatsApp" onclick="event.stopPropagation();">
                             <i class="fa-brands fa-whatsapp"></i>
                         </a>
                     </div>

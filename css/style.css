@@ -278,38 +278,6 @@ ul {
     border-color: var(--accent);
 }
 
-/* Nova Barra de Busca Rápida */
-.catalog-search-box {
-    position: relative;
-    width: 100%;
-    max-width: 450px;
-}
-
-.catalog-search-box i {
-    position: absolute;
-    left: 15px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: var(--text-muted);
-}
-
-.catalog-search-box input {
-    width: 100%;
-    padding: 12px 15px 12px 45px;
-    background-color: var(--bg-card);
-    border: 1px solid var(--border-color);
-    border-radius: 25px;
-    color: #fff;
-    font-size: 0.95rem;
-    outline: none;
-    transition: var(--transition);
-}
-
-.catalog-search-box input:focus {
-    border-color: var(--accent);
-    box-shadow: 0 0 10px rgba(229, 9, 20, 0.2);
-}
-
 .motos-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
@@ -324,6 +292,7 @@ ul {
     transition: var(--transition);
     display: flex;
     flex-direction: column;
+    cursor: pointer;
 }
 
 .moto-card:hover {
@@ -332,27 +301,31 @@ ul {
     border-color: rgba(229, 9, 20, 0.4);
 }
 
-/* Proporção padronizada de imagem (Aspect Ratio 16/9 e object-fit) */
-.moto-img-container {
+/* ==========================================
+   IMAGEM DOS CARDS (CORREÇÃO DEFINITIVA)
+   ========================================== */
+.moto-card-img-wrapper {
     position: relative;
     width: 100%;
-    aspect-ratio: 16 / 9;
+    height: 240px; /* Altura fixa rigorosa para todos os cards */
     overflow: hidden;
     background-color: #0b0c10;
 }
 
-.moto-img-container img {
+.moto-card-img {
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    object-fit: cover; /* Preenche o espaço perfeitamente sem esticar ou distorcer */
+    object-position: center;
+    display: block;
     transition: transform 0.5s ease;
 }
 
-.moto-card:hover .moto-img-container img {
+.moto-card:hover .moto-card-img {
     transform: scale(1.05);
 }
 
-.moto-badge-tag {
+.moto-badge {
     position: absolute;
     top: 15px;
     left: 15px;
@@ -366,15 +339,23 @@ ul {
     z-index: 2;
 }
 
-.moto-details {
+.moto-card-body {
     padding: 20px;
     display: flex;
     flex-direction: column;
     flex-grow: 1;
 }
 
-.moto-title {
-    font-size: 1.25rem;
+.moto-marca {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 4px;
+}
+
+.moto-modelo {
+    font-size: 1.2rem;
     margin-bottom: 12px;
     color: #fff;
 }
@@ -403,31 +384,29 @@ ul {
     gap: 10px;
 }
 
-/* Hierarquia de preço elegante em vermelho corporativo */
-.moto-price {
+.moto-preco {
     font-size: 1.35rem;
     font-weight: 700;
-    color: #ff4d4f;
+    color: var(--accent);
     font-family: 'Montserrat', sans-serif;
 }
 
-.btn-interest {
+.btn-whatsapp-card {
     background-color: var(--whatsapp);
     color: #fff;
-    padding: 10px 16px;
-    border-radius: 6px;
-    font-size: 0.9rem;
-    font-weight: 600;
-    display: inline-flex;
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    display: flex;
     align-items: center;
-    gap: 8px;
+    justify-content: center;
+    font-size: 1.2rem;
     transition: var(--transition);
-    white-space: nowrap;
 }
 
-.btn-interest:hover {
+.btn-whatsapp-card:hover {
     background-color: var(--whatsapp-hover);
-    transform: scale(1.02);
+    transform: scale(1.05);
 }
 
 /* ==========================================
@@ -519,16 +498,6 @@ ul {
     border-radius: 8px;
 }
 
-.feature-item h3 {
-    font-size: 1.05rem;
-    margin-bottom: 4px;
-}
-
-.feature-item p {
-    font-size: 0.9rem;
-    margin: 0;
-}
-
 .contact-box {
     background-color: var(--bg-secondary);
     border: 1px solid var(--border-color);
@@ -556,10 +525,6 @@ ul {
     color: var(--accent);
     font-size: 1.1rem;
     width: 20px;
-}
-
-.contact-box .btn {
-    margin-top: 15px;
 }
 
 /* ==========================================
@@ -604,30 +569,6 @@ ul {
     padding-left: 5px;
 }
 
-.social-links {
-    display: flex;
-    gap: 12px;
-}
-
-.social-links a {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 40px;
-    height: 40px;
-    background-color: var(--bg-card);
-    color: #fff;
-    border-radius: 50%;
-    border: 1px solid var(--border-color);
-    transition: var(--transition);
-}
-
-.social-links a:hover {
-    background-color: var(--accent);
-    border-color: var(--accent);
-    transform: translateY(-3px);
-}
-
 .footer-bottom {
     text-align: center;
     padding-top: 20px;
@@ -652,12 +593,10 @@ ul {
     .about-container {
         grid-template-columns: 1fr;
     }
-    
     .footer-content {
         grid-template-columns: 1fr;
         gap: 30px;
     }
-
     .hero h1 {
         font-size: 2.6rem;
     }
@@ -677,403 +616,18 @@ ul {
         transition: 0.4s ease;
         border-top: 1px solid var(--border-color);
     }
-
     .nav-menu.active {
         left: 0;
     }
-
     .nav-list {
         flex-direction: column;
         align-items: center;
         gap: 25px;
     }
-
-    .nav-link {
-        font-size: 1.2rem;
-    }
-
-    .header-actions .btn-whatsapp-header {
-        display: none;
-    }
-
-    .hamburger {
-        display: block;
-    }
-
     .hero h1 {
         font-size: 2.2rem;
     }
-
     .motos-grid {
         grid-template-columns: 1fr;
     }
-
-    .whatsapp-sticky {
-        bottom: 20px;
-        right: 20px;
-        width: 50px;
-        height: 50px;
-        font-size: 1.6rem;
-    }
-}
-
-/* ==========================================
-   ESTILOS EXCLUSIVOS DO PAINEL ADM
-   ========================================== */
-.admin-body {
-    background-color: #0b0d11;
-}
-
-.admin-login-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100vh;
-    background-color: var(--bg-primary);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 3000;
-}
-
-.admin-login-card {
-    background-color: var(--bg-card);
-    border: 1px solid var(--border-color);
-    padding: 40px;
-    border-radius: 16px;
-    max-width: 400px;
-    width: 90%;
-    text-align: center;
-    box-shadow: var(--shadow);
-}
-
-.admin-login-card h2 {
-    margin: 15px 0 5px 0;
-}
-
-.admin-login-card p {
-    color: var(--text-muted);
-    font-size: 0.9rem;
-    margin-bottom: 20px;
-}
-
-.admin-header {
-    background-color: var(--bg-secondary);
-    border-bottom: 1px solid var(--border-color);
-    padding: 15px 0;
-}
-
-.admin-nav {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.badge-adm {
-    background-color: var(--accent);
-    color: #fff;
-    font-size: 0.7rem;
-    padding: 2px 8px;
-    border-radius: 4px;
-    margin-left: 8px;
-    text-transform: uppercase;
-}
-
-.admin-actions {
-    display: flex;
-    gap: 10px;
-}
-
-.btn-secondary {
-    background-color: var(--bg-card);
-    color: #fff;
-    border: 1px solid var(--border-color);
-}
-
-.btn-secondary:hover {
-    background-color: var(--border-color);
-}
-
-.btn-logout {
-    background-color: rgba(229, 9, 20, 0.2);
-    color: #ff4d4f;
-    border: 1px solid rgba(229, 9, 20, 0.4);
-}
-
-.btn-logout:hover {
-    background-color: var(--accent);
-    color: #fff;
-}
-
-.admin-main {
-    padding: 40px 20px;
-}
-
-.admin-card-section {
-    background-color: var(--bg-secondary);
-    border: 1px solid var(--border-color);
-    border-radius: 12px;
-    padding: 25px;
-    margin-bottom: 30px;
-}
-
-.admin-card-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-    padding-bottom: 15px;
-    border-bottom: 1px solid var(--border-color);
-}
-
-.admin-card-header h2 {
-    font-size: 1.3rem;
-}
-
-.form-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 20px;
-}
-
-.form-group.span-2 {
-    grid-column: span 2;
-}
-
-.form-group label {
-    display: block;
-    font-size: 0.85rem;
-    color: var(--text-muted);
-    margin-bottom: 6px;
-}
-
-.form-group input, .form-group select {
-    width: 
-    100%;
-    padding: 10px 14px;
-    background-color: var(--bg-card);
-    border: 1px solid var(--border-color);
-    border-radius: 8px;
-    color: #fff;
-    outline: none;
-}
-
-.form-group input:focus, .form-group select:focus {
-    border-color: var(--accent);
-}
-
-.image-upload-options {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-.divider-text {
-    font-size: 0.8rem;
-    color: var(--text-muted);
-}
-
-.help-text {
-    color: var(--text-muted);
-    font-size: 0.75rem;
-    margin-top: 4px;
-    display: block;
-}
-
-.form-actions {
-    margin-top: 25px;
-    display: flex;
-    gap: 15px;
-}
-
-/* Tabela ADM */
-.table-responsive {
-    overflow-x: auto;
-}
-
-.admin-table {
-    width: 100%;
-    border-collapse: collapse;
-    text-align: left;
-}
-
-.admin-table th, .admin-table td {
-    padding: 12px 15px;
-    border-bottom: 1px solid var(--border-color);
-}
-
-.admin-table th {
-    color: var(--text-muted);
-    font-size: 0.85rem;
-    text-transform: uppercase;
-}
-
-.table-thumb {
-    width: 60px;
-    height: 40px;
-    object-fit: cover;
-    border-radius: 6px;
-}
-
-.action-btns {
-    display: flex;
-    gap: 8px;
-}
-
-.btn-icon {
-    width: 34px;
-    height: 34px;
-    border-radius: 6px;
-    border: none;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: var(--transition);
-}
-
-.btn-edit {
-    background-color: rgba(255, 255, 255, 0.1);
-    color: #fff;
-}
-
-.btn-edit:hover {
-    background-color: #3b82f6;
-}
-
-.btn-delete {
-    background-color: rgba(229, 9, 20, 0.2);
-    color: #ff4d4f;
-}
-
-.btn-delete:hover {
-    background-color: var(--accent);
-    color: #fff;
-}
-
-.btn-danger-sm {
-    background-color: transparent;
-    color: var(--text-muted);
-    border: 1px solid var(--border-color);
-    padding: 6px 12px;
-    border-radius: 6px;
-    font-size: 0.8rem;
-    cursor: pointer;
-}
-
-.btn-danger-sm:hover {
-    color: #ff4d4f;
-    border-color: #ff4d4f;
-}
-
-@media (max-width: 768px) {
-    .form-grid {
-        grid-template-columns: 1fr;
-    }
-    .form-group.span-2 {
-        grid-column: span 1;
-    }
-}
-
-/* ==========================================
-   CARROSSEL NOS CARDS E GALERIA DO MODAL
-   ========================================== */
-.moto-img-container {
-    position: relative;
-}
-
-.carousel-indicators {
-    position: absolute;
-    bottom: 10px;
-    left: 50%;
-    transform: translateX(-50%);
-    display: flex;
-    gap: 5px;
-    z-index: 3;
-    pointer-events: none;
-}
-
-.carousel-indicators .indicator {
-    width: 6px;
-    height: 6px;
-    background-color: rgba(255, 255, 255, 0.5);
-    border-radius: 50%;
-    transition: var(--transition);
-}
-
-.carousel-indicators .indicator.active {
-    background-color: var(--accent);
-    width: 16px;
-    border-radius: 3px;
-}
-
-/* Galeria de Miniaturas no Modal */
-.modal-gallery-container {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-}
-
-.modal-gallery-main-img {
-    width: 100%;
-    aspect-ratio: 16 / 9;
-    object-fit: cover;
-    border-radius: 12px;
-    border: 1px solid var(--border-color);
-}
-
-.modal-thumbnails {
-    display: flex;
-    gap: 10px;
-    overflow-x: auto;
-    padding-bottom: 5px;
-}
-
-.modal-thumbnails::-webkit-scrollbar {
-    height: 6px;
-}
-
-.modal-thumbnails::-webkit-scrollbar-thumb {
-    background-color: var(--border-color);
-    border-radius: 3px;
-}
-
-.modal-thumb {
-    width: 75px;
-    height: 48px;
-    object-fit: cover;
-    border-radius: 6px;
-    cursor: pointer;
-    border: 2px solid transparent;
-    opacity: 0.6;
-    transition: var(--transition);
-    flex-shrink: 0;
-}
-
-.modal-thumb:hover, .modal-thumb.active {
-    border-color: var(--accent);
-    opacity: 1;
-}
-
-/* Correção de enquadramento das imagens nos cards */
-.moto-card-img-wrapper {
-    width: 100%;
-    height: 220px; /* Altura fixa ideal para o card */
-    overflow: hidden;
-    position: relative;
-    background-color: #1a1e29;
-}
-
-.moto-card-img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover; /* Corta proporcionalmente sem distorcer ou esticar */
-    object-position: center;
-    display: block;
-    transition: transform 0.3s ease;
-}
-
-.moto-card:hover .moto-card-img {
-    transform: scale(1.05); /* Efeito suave ao passar o mouse */
 }
