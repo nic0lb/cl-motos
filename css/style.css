@@ -849,7 +849,8 @@ ul {
 }
 
 .form-group input, .form-group select {
-    width: 100%;
+    width: 
+    100%;
     padding: 10px 14px;
     background-color: var(--bg-card);
     border: 1px solid var(--border-color);
@@ -1053,4 +1054,26 @@ ul {
 .modal-thumb:hover, .modal-thumb.active {
     border-color: var(--accent);
     opacity: 1;
+}
+
+/* Correção de enquadramento das imagens nos cards */
+.moto-card-img-wrapper {
+    width: 100%;
+    height: 220px; /* Altura fixa ideal para o card */
+    overflow: hidden;
+    position: relative;
+    background-color: #1a1e29;
+}
+
+.moto-card-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Corta proporcionalmente sem distorcer ou esticar */
+    object-position: center;
+    display: block;
+    transition: transform 0.3s ease;
+}
+
+.moto-card:hover .moto-card-img {
+    transform: scale(1.05); /* Efeito suave ao passar o mouse */
 }
